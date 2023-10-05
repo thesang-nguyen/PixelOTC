@@ -192,6 +192,18 @@ class PixelOTC:
         fig.tight_layout()
         plt.show()
 
+    def otc_curve(self, dists):
+        '''
+        OTC curve for distances `dists`.
+
+        Parameters
+        ----------
+        dists : ndarray or list of floats
+            Distances at which to compute OTC curve.
+        '''
+        curve = otc_curve(self.pi, self.C, dists)
+        return curve
+
     def plot_otc_curve(self, dists):
         '''
         Plot OTC curve for distances `dists`.
