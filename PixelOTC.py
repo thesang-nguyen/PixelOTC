@@ -128,21 +128,22 @@ class PixelOTC:
         optimal_cost : float
             Optimal transport cost.
         '''
-        mu = self.mu.astype(dtype=np.float64)
-        nu = self.nu.astype(dtype=np.float64)
+        mu = self.mu
+        nu = self.nu
         C = self.C.astype(dtype=np.float64)
 
         if self.unbalanced:
             mu = np.append(mu, nu.sum())
-            nu = np.append(nu, mu.sum())
+            nu = np.append(nu, mu[:-1].sum())
             C = np.pad(
                 C, ((0, 1), (0, 1)),
                 mode='constant', constant_values=self.lam/2
             )
             C[-1, -1] = 0.
+        else:
+            mu = mu/mu.sum()
+            nu = nu/nu.sum()
 
-        mu /= mu.sum()
-        nu /= nu.sum()
         self.pi = ot.emd(mu, nu, C)
         self.optimal_cost = np.sum(self.pi * C)
 
