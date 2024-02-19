@@ -65,11 +65,17 @@ def otc_curve(pi, C, dists):
     dists : ndarray or list of floats
         Distances at which to compute OTC curve.
     '''
-    curve = []
-    for dist in dists:
-        I, J = np.where(C < dist*dist)  # C represents *squared* distances
-        curve.append(pi[I, J].sum())
+    ind = np.argsort(C.flatten())
+    C = C.flatten()[ind]
+    pi = pi.flatten()[ind]
+    I = np.searchsorted(C, dists)
+    curve = np.cumsum(pi)[I]
     return curve
+    # curve = []
+    # for dist in dists:
+    #     I, J = np.where(C < dist*dist)  # C represents *squared* distances
+    #     curve.append(pi[I, J].sum())
+    # return curve
 
 
 def scale256(im):
@@ -140,7 +146,7 @@ class PixelOTC:
                 mode='constant', constant_values=self.lam/2
             )
             C[-1, -1] = 0.
-            np.testing.assert_approx_equal(mu.sum(), nu.sum(),err_msg='Something did not sum up, check code and inputs')
+            np.testing.assert_approx_equal(mu.sum(), nu.sum(), err_msg='Something did not sum up, check code and inputs')
             mu = mu/mu.sum() * np.sum(nu)
         else:
             mu = mu/mu.sum()
