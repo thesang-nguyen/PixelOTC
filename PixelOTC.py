@@ -140,6 +140,8 @@ class PixelOTC:
                 mode='constant', constant_values=self.lam/2
             )
             C[-1, -1] = 0.
+            np.testing.assert_array_almost_equal(mu.sum(), nu.sum(), err_msg='Something did not sum up, check code and inputs')
+            mu = mu/mu.sum() * np.sum(nu)
         else:
             mu = mu/mu.sum()
             nu = nu/nu.sum()
