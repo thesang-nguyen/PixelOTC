@@ -152,7 +152,7 @@ class PixelOTC:
             mu = mu/mu.sum()
             nu = nu/nu.sum()
 
-        self.pi = ot.emd(mu, nu, C)
+        self.pi = ot.emd(mu, nu, C, numItermax=1e7)
         self.optimal_cost = np.sum(self.pi * C)
 
         if self.unbalanced:
